@@ -1,0 +1,149 @@
+structs:
+
+//////////////////////////////
+
+typedef struct palavra
+{
+	int Num = 0;
+	
+}PALA;
+
+typedef struct Bl
+{
+	PALA P[4];
+}Bloco;
+
+typedef struct memoriadeInstrucoes
+{
+	int OP;
+	int endBloco1, endPALA1;
+	int endBloco2, endPALA2;
+}memI;
+
+typedef struct linhadacache
+{
+    	int alterado=0;
+	int endbloco = -1;
+	PALA P[4];
+	int acesso = 0;
+}linha;
+
+///////////////////////////
+
+
+Função da MMU
+******** ESTA É APENAS UMA MANEIRA DE FAZER, EXISTEM VÁRIAS MANEIRAS, ESTA NAO É NECESSARIAMENTE A MENOR NEM A MELHOR, MAS FUNCIONA******
+//este pseudocódigo simula somente a parte que procura na L1, e depois da par que procura na L2 e manda para L1. As partes L3->L2->L1 e MD->L3->L2->L1 são identicas so muda os indices que percorrem as caches (i,j,k,l).
+// um codigo vai ficando encapsulado dentro do outro (MD->(L3->(L2->(L1))))
+
+*1º passo:
+
+//Percorra a cache 1:
+
+for(i=0;i<tamL1;i++)
+{
+	if(L1[i].endbloco ==endB)//Se o dado estiver naquela posição
+	{
+		L1[i].acesso++;//aumenta o numero de acessos
+		-------//aumenta o cachehit1 (essa parte depende de como vc implementou a struct Linha)
+		Rel[PC]=5;//o tempo gasto para buscar o dado foi de 5, por exemplo
+		return (alguma coisa); // sua função pode retornar o dado ou a posição "i" em que ele se encontra, ou se achou ou nao o dado, ou ate mesmo nao retornar nada.
+	}
+}
+	//se chegou aqui significa que percorreu a cache 1 toda e nao achou.
+	-------++ //aumenta o cachemiss1 (essa parte depende de como vc implementou a struct Linha)
+	Rel[PC]=5;//o tempo gasto para buscar o dado foi de 5, por exemplo
+*2º passo:	
+//Percorrendo a cache 2:
+for(j=0;j<tamL2;j++)
+{
+	if(L2[j].endbloco== endB)//Se o dado estiver naquela posição
+	{
+		**Inicia um processo de mandar para cache 1**
+		-------//aumenta o cachehit2 (essa parte depende de como vc implementou a struct Linha)
+		Rel[PC]+=10;//o tempo gasto para buscar o dado foi de 15( 5 da cache 1, mais 10 da cache 2), por exemplo
+		//se achou o dado na 2 vc precisa mandar para 1
+		//entao vc vai percorrer a cache 1 de novo para mandar para ela
+		//
+		for(i=0;i<tamL1;i++)
+		{
+			***ATENCAO NESTA PARTE***
+			if(L1[i].endbloco ==-1)//Se a posicão em que o for se encontra estiver vazia, vc vai por o dado nesta posição
+			{
+				L1[i]=L2[j]; // Passa os dados para a cache 1
+				*******************************PARTE FUCKING IMPORTANTE***************************
+				//ESVAZIA A POSICAO ANTERIOR DO DADO
+				// por exemplo se cada palavra possui um inteiro:
+				L2[j].acesso = 0;
+				L2[j].endbloco = -1;
+				for(k=0;k<4;k++)//percorre cada palavra esvaziando-as
+				{
+					L2[j].P[k].Num= 0;
+				}
+				return (alguma coisa); // sua função pode retornar o dado ou a posição "i" em que ele se encontra, ou se achou ou nao o dado, ou ate mesmo nao retornar nada.
+			}
+			else if(L2[j].acesso<=usadomenos) // se a linha tem algum dado entao ele ja verifica se o dado é o usadomenos
+			{
+				usadomenos = L2[j].acesso;
+			}
+			if(i==tamL1-1 && L1[i].endbloco!= -1) // se estiver na ultima posição e ela tiver algum dado a cache esta cheia
+			{
+				//Nesta parte voce pode percorrer a cache 1 de novo e assim que encontrar aquele que tem o numero de acessos igual ao usadomenos vc realiza a troca com a variavel auxiliar:
+				for(l=0;l<tamL1;l++)
+				{
+					if(L1[l].acesso == usadomenos)
+					{
+						aux = L1[l];
+						L1[l] = L2[j];
+						L2[j] = aux;
+					}
+				}
+			}
+		}
+		**termina o processo de mandar pra cache 1
+	}
+	if(j==tamL2-1 && L2[j].endbloco!=-1)//se enquanto vc estiver procurando na 2 vc nao achar nela
+	{ 
+		
+	-------++ //aumenta o cachemiss2 (essa parte depende de como vc implementou a struct Linha)
+	Rel[PC]=15;//o tempo gasto para buscar o dado foi de 15(5 da L1 mais 10 da L2), por exemplo
+	return (alguma coisa); // sua função pode retornar o dado ou a posição "i" em que ele se encontra, ou se achou ou nao o dado, ou ate mesmo nao retornar nada.
+	}
+//////////////////////////////////////////////
+
+RESUMAO
+
+Todo este processo seguiu resumindamente estes passos:
+
+Procura na L1
+	se encontrar sai da funcao
+	senao vai procurar na 2
+Procura na L2
+	se encontrar manda pra 1
+		Procura espaço na L1
+		se encontrar manda o dado e sai da funcao
+		senao realiza a troca de acordo com a politica adotada
+	se nao vai procurar na L3 (esta part nao fiz ali em cima, mas vc vai ser os mesmos comandos só q vc vai encapsular a parte L2->L1 dentro da parte que vai procurar na L3
+Procura na L3
+	se encontrar dado vai mandar pra 2
+		Procura na espaço L2
+			se encontrar espaço manda pra L2
+				Procura espaço na L1
+				se encontrar espaço manda para 1
+				senao realiza a troca de acordo com a politica adotada
+			senao realiza a troca de acordo com a politica adotada
+	senao procura o dado na MD
+Procura na MD
+	Pego e dado e vai mandar pra 3
+		Procura na espaço na L3
+			se encontrar espaço manda pra L3
+				Procura espaço na L2
+					se encontrar espaço manda para 2
+						Procura espaço na L1
+						se encontrar espaço manda para 1
+						senao realiza a troca de acordo com a politica adotada
+					senao realiza a troca de acordo com a politica adotada
+			senao realiza a troca de acordo com a politica adotada
+	senao realiza a troca de acordo com a politica adotada e altero o dado que estava na L3 na MD se o campo L3.alterado estiver marcado como true/1/'sim'
+
+

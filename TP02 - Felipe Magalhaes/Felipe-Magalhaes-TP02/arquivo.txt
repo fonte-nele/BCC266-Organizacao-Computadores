@@ -1,0 +1,25 @@
+
+INICIALIZANDO A SIMULACAO !!!
+
+1 - Gremio perdeu o jogo contra o Goias :Placar 1 X 6
+2 - Santos ganhou o jogo contra o Ponte Preta :Placar 6 X 5
+3 - Cruzeiro empatou o jogo contra o Coritiba :Placar 3 X 3
+4 - Atletico-MG esta jogando contra o Vasco
+5 - Vasco ganhou o jogo contra o Sport :Placar 5 X 0
+6 - Sport empatou o jogo contra o Sao Paulo :Placar 5 X 5
+7 - Fluminense perdeu o jogo contra o Flamengo :Placar 0 X 5
+8 - Sao Paulo empatou o jogo contra o Santos :Placar 6 X 6
+9 - Corinthians ganhou o jogo contra o Chapecoense :Placar 1 X 0
+10 - Palmeiras esta jogando contra o Joinville
+11 - Figueirense perdeu o jogo contra o Cruzeiro :Placar 0 X 6
+12 - JOGO INVALIDO. O TIME Avai NAO PODE AUTO SE ENFRETAR EM UMA PARTIDA.
+13 - Ponte Preta empatou o jogo contra o Palmeiras :Placar 4 X 4
+14 - Chapecoense ganhou o jogo contra o Avai :Placar 21 X 2
+15 - Joinville perdeu o jogo contra o Internacional :Placar 3 X 6
+16 - Atletico-PR empatou o jogo contra o Atletico-MG :Placar 5 X 5
+17 - Internacional esta jogando contra o Gremio
+18 - Coritiba empatou o jogo contra o Corinthians :Placar 5 X 5
+19 - Flamengo perdeu o jogo contra o Figueirense :Placar 1 X 6
+20 - Gremio ganhou o jogo contra o Goias :Placar 5 X 1
+
+FINALIZANDO A SIMULACAO...
